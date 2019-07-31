@@ -732,6 +732,7 @@ RCT_EXPORT_METHOD(findCalendars:(RCTPromiseResolveBlock)resolve rejecter:(RCTPro
                                         @"title": calendar.title ? calendar.title : @"",
                                         @"allowsModifications": @(calendar.allowsContentModifications),
                                         @"source": calendar.source && calendar.source.title ? calendar.source.title : @"",
+                                        @"sourceId": calendar.source ? calendar.source.sourceIdentifier : nil,
                                         @"isPrimary": @(isPrimary),
                                         @"allowedAvailabilities": [self calendarSupportedAvailabilitiesFromMask:calendar.supportedEventAvailabilities],
                                         @"color": [self hexStringFromColor:[UIColor colorWithCGColor:calendar.CGColor]]
