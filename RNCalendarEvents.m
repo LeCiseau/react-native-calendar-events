@@ -752,6 +752,7 @@ RCT_EXPORT_METHOD(saveCalendar:(NSDictionary *)options resolver:(RCTPromiseResol
     NSString *title = [RCTConvert NSString:options[@"title"]];
     NSNumber *color = [RCTConvert NSNumber:options[@"color"]];
     NSString *type = [RCTConvert NSString:options[@"entityType"]];
+    NSString *sourceId = [RCTConvert NSString:options[@"sourceId"]];
 
     // First: Check if the user has an iCloud source set-up.
     /*
