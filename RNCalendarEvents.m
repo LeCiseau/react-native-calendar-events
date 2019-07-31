@@ -174,12 +174,12 @@ RCT_EXPORT_MODULE()
         NSDictionary *geo = [locationOptions valueForKey:@"coords"];
         CLLocation *geoLocation = [[CLLocation alloc] initWithLatitude:[[geo valueForKey:@"latitude"] doubleValue]
                                                              longitude:[[geo valueForKey:@"longitude"] doubleValue]];
-        
+
         calendarEvent.structuredLocation = [EKStructuredLocation locationWithTitle:[locationOptions valueForKey:@"title"]];
         calendarEvent.structuredLocation.geoLocation = geoLocation;
         calendarEvent.structuredLocation.radius = [[locationOptions valueForKey:@"radius"] doubleValue];
     }
-    
+
     return [self saveEvent:calendarEvent options:options];
 }
 
@@ -654,7 +654,7 @@ RCT_EXPORT_MODULE()
     }
 
     [formedCalendarEvent setValue:[self availabilityStringMatchingConstant:event.availability] forKey:_availability];
-    
+
     if (event.structuredLocation) {
         NSMutableDictionary *structuredLocation = [[NSMutableDictionary alloc] initWithCapacity:3];
         [structuredLocation addEntriesFromDictionary: @{
@@ -754,6 +754,7 @@ RCT_EXPORT_METHOD(saveCalendar:(NSDictionary *)options resolver:(RCTPromiseResol
     NSString *type = [RCTConvert NSString:options[@"entityType"]];
 
     // First: Check if the user has an iCloud source set-up.
+    /*
     for (EKSource *source in self.eventStore.sources) {
         if (source.sourceType == EKSourceTypeCalDAV && [source.title isEqualToString:@"iCloud"]) {
             calendarSource = source;
@@ -774,6 +775,7 @@ RCT_EXPORT_METHOD(saveCalendar:(NSDictionary *)options resolver:(RCTPromiseResol
     if (calendarSource == nil) {
         return reject(@"error", @"no source found to create the calendar (local & icloud)", nil);
     }
+    */
 
     if ([type isEqualToString:@"event"]) {
     calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent eventStore:self.eventStore];
@@ -785,7 +787,11 @@ RCT_EXPORT_METHOD(saveCalendar:(NSDictionary *)options resolver:(RCTPromiseResol
              nil);
     }
 
-    calendar.source = calendarSource;
+    if (sourceId) {
+      calendar.source = [self.eventStore sourceWithIdentifier:sourceId];
+    }
+
+    // calendar.source = calendarSource;
     if (title) {
       calendar.title = title;
     }
@@ -948,7 +954,7 @@ RCT_EXPORT_METHOD(removeEvent:(NSString *)eventId options:(NSDictionary *)option
       __weak RNCalendarEvents *weakSelf = self;
       dispatch_async(serialQueue, ^{
           RNCalendarEvents *strongSelf = weakSelf;
-          
+
           EKEvent *calendarEvent = (EKEvent *)[self.eventStore calendarItemWithIdentifier:eventId];
           NSError *error = nil;
           EKSpan eventSpan = EKSpanThisEvent;
